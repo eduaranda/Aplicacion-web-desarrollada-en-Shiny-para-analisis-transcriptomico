@@ -7,11 +7,12 @@ library(shinydashboard)
 library(shinyFiles)
 library(dplyr)
 library(tidyverse) #libreria necesaria para poder separar cada read del paired-end
+# Título de la página principal
+header <- dashboardHeader(title = "PROYECTO FINAL DE GRADO", titleWidth = 1550) 
 
-header <- dashboardHeader(title = "PROYECTO FINAL DE GRADO", titleWidth = 1550) #Título de la página principal
+# Crear los menus de la aplicación, con iconos visuales que seran vistos en la pestaña principal del usuario  
 
-#Crear los menus de la aplicación, con iconos visuales que seran vistos en la pestaña principal del usuario 
-sidebar <- dashboardSidebar(
+  sidebar <- dashboardSidebar(
   sidebarMenu(id ="tabs",
               menuItem("Introducción", tabName = "Intro", icon = icon("edit")),
               menuItem("Tipo de Análisis", tabName = "Selección", icon = icon("check-circle")),
@@ -31,7 +32,7 @@ body <- dashboardBody(
             h1("Introducción"),
             br(),
             p("Esta aplicación esta realizada en R + Shiny con el objetivo de crear una aplicación user-friendy para los usuaios."),
-            p("Permite realizar el preprocesamiento de ficheros derivados de técnicas de secuenciación masiva, específicamente RNA-seq, para obtener finalmente los archivos de su procesamiento en formato BAM y realizar la matriz de conteo para su posterior análisis."),
+            p("Permite realizar el preprocesamiento de ficheros derivados de técnicas de secuenciación masiva, específicamente RNA-seq, para obtener finalmente los archivos de su                   procesamiento en formato BAM y realizar la matriz de conteo para su posterior análisis."),
             p("Para su utilización es necesario tener instalados en su terminal de MacOS o en ubuntu los siguientes software:"),
             tags$ol(
               tags$li("FastQC ->  Para realizar el control de calidad de las secuencias."),
@@ -43,24 +44,24 @@ body <- dashboardBody(
             br(),
             
             h2("¿Cómo usar la aplicación?"),
-            p("La aplicación cuenta con nueve pestañas en el lateral izquierdo. Se debe empezar por la primera y seguir en orden, completando toda la información requerida en cada ventana. Las ventanas son: Introducción, Tipo de Análisis, Cargar archivos, Control de Calidad, Preprocesamiento, Carga secuencia de referencia, Alineamiento, SAM y Matriz de Conteo."),
+            p("La aplicación cuenta con nueve pestañas en el lateral izquierdo. Se debe empezar por la primera y seguir en orden, completando toda la información requerida en cada                 ventana. Las ventanas son: Introducción, Tipo de Análisis, Cargar archivos, Control de Calidad, Preprocesamiento, Carga secuencia de referencia, Alineamiento, SAM y Matriz             de Conteo."),
             br(),
             
             h3("Tipo de análisis"),
             p("Inicialmente, es necesario elegir si se desea realizar el análisis mediante Single-end o Paired-end."),
             p("Single-end corresponde que la secuenciación se realizó solo teniendo en cuenta un extremo, mientas que paired-end significa que se ha secuenciado por ambos extremos."),
-            p("Si quiere realzar un análisis paired-end, tiene que cambiar el nombre de los archivos, de tal forma que si quiere analizar un archivo llamado NOMBRE_ARCHIVO (que es el mismo para ambas lecturas) y posee ambos pared de lecturas, tienes que denominarlos como: NOMBRE_ARCHIVO_rep1_read1 y NOMBRE_ARCHIVO_rep1_read2."),
+            p("Si quiere realzar un análisis paired-end, tiene que cambiar el nombre de los archivos, de tal forma que si quiere analizar un archivo llamado NOMBRE_ARCHIVO (que es el               mismo para ambas lecturas) y posee ambos pared de lecturas, tienes que denominarlos como: NOMBRE_ARCHIVO_rep1_read1 y NOMBRE_ARCHIVO_rep1_read2."),
             
             h3("Cargar archivos"),
-            p("Seleccione el directorio donde se ubica el archivo `carpetaPFG´, que contiene todos los script necesarios para ejecutar la aplicación, así como las carperas donde se almacenaran todos los resultados."),
+            p("Seleccione el directorio donde se ubica el archivo `carpetaPFG´, que contiene todos los script necesarios para ejecutar la aplicación, así como las carperas donde se                 almacenaran todos los resultados."),
             p("Posteriormente, suba los input en: ‘Selecciona los archivos en formato fastq que quieres analizar'. Estos archivos son los generadas por el secuenciador."),
             p("Al cargar las secuencias, seleccione el botón de Iniciar lectura de secuencias."),
             
             h3("Control de calidad"),
             p("Presione el botón que indica `Iniciar Control de Calidad´"),
-            p("Una vez finalizado el control de calidad de todas las secuencias, puede acceder a los resultados y ver el informe de control de calidad generado para cada secuencia introducida  en `carpetaPFG/resultados/rsultados_control_calidad´."),
+            p("Una vez finalizado el control de calidad de todas las secuencias, puede acceder a los resultados y ver el informe de control de calidad generado para cada secuencia                 introducida  en `carpetaPFG/resultados/rsultados_control_calidad´."),
             p("Además, puede visualizar el resultado seleccionando el botón `Visualizar resultado del Control de Calidad´."),
-            p("Al darle al botón se generan tantos botones como archivos se han introducido en la aplicación por el usuario y al teclear el botón sale el informe del control de calidad del archivo correspondiente a cada secuencia."),
+            p("Al darle al botón se generan tantos botones como archivos se han introducido en la aplicación por el usuario y al teclear el botón sale el informe del control de                     calidad del archivo correspondiente a cada secuencia."),
             
             h3("Preprocesamiento"),
             p("Dependiendo de la longitud del tamaño de los fragmentos generados por el secuenciados, seleccione la longitud mínima que quiere usar para el preprocesamiento."),
@@ -73,7 +74,7 @@ body <- dashboardBody(
             
             h3("Alineamiento"),
             p("Presione 'Realizar el alineamiento'."),
-            p("Este proceso puede ser el más prolongado. La aplicación realiza el alineamiento usando el software Bowtie. Se le notificara una vez finalice el alineamiento de todas las secuencias."),
+            p("Este proceso puede ser el más prolongado. La aplicación realiza el alineamiento usando el software Bowtie. Se le notificara una vez finalice el alineamiento de todas                 las secuencias."),
             p("Los resultados se encuentran en 'carpetaPFG/resultados/resultados_alineamiento'."),
             
             h3("SAM"),
@@ -172,7 +173,7 @@ server <- function(input, output, session) {
   
   rv <- reactiveValues() # Define la variable reactiva 'folder_path'
   
-  # Mostrar la ruta del directorio seleccionado por el usuario
+  #Mostrar la ruta del directorio seleccionado por el usuario
   output$folder_path <- renderText({ 
     if (is.null(input$directorio)) {
       return("No se ha seleccionado ningún directorio. Por favor introduzca el directorio.")
@@ -203,7 +204,7 @@ server <- function(input, output, session) {
         }
       }
       
-      # Lista los archivos en el directorio
+      #Lista los archivos en el directorio
       files <- list.files(dir_create, full.names = TRUE)
       file_names <- basename(files)
       # Se define el patrones
@@ -237,45 +238,45 @@ server <- function(input, output, session) {
       
       #para poder leer el contenido de cada archivo
       leer_contenido_archivo <- function(file_name) {
-        # indica la ruta al archivo
+        #indica la ruta al archivo
         file_path <- file.path(dir_path, file_name)
         
-        # Leer el archivo FASTQ
+        #Leer el archivo FASTQ
         contenido <- readFastq(file_path)
         
-        # Devolver el contenido leído del archivo 
+        #Devolver el contenido leído del archivo 
         return(paste(sread(contenido), collapse=""))
       }
       
-      # Ruta al directorio donde se encuentran los archivos
+      #Ruta al directorio donde se encuentran los archivos
       dir_path <- file.path(rv$folder_path, "/", "secuencias")
       
-      # Lee todos los nombres de los archivos en el directorio que acaban en .fq
+      #Lee todos los nombres de los archivos en el directorio que acaban en .fq
       all_files <- list.files(path = dir_path, pattern = "\\.fq$")
       
-      # Separar cada parte de los nombres de los archivos cuando encuentra _read_
+      #Separar cada parte de los nombres de los archivos cuando encuentra _read_
       files_df <- data.frame(filename = all_files) %>%
         separate(filename, c("base", "read"), sep = "_read_") %>%
         separate(base, c("base", "rep"), sep = "rep_", extra = "merge") %>%
         mutate(rep = str_replace(rep, "^0*", ""))
       
-      # Crea una columna que indica a que par pertenece cada archivo
+      #Crea una columna que indica a que par pertenece cada archivo
       files_df <- files_df %>%
         mutate(pair = ifelse(read == "1", paste0(base, "_rep_", rep), NA)) %>%
         fill(pair)
       
-      # Almacenar el nombre del archivo y lee el contenido de cada archivo en una nueva columna llamada "contenido"
+      #Almacenar el nombre del archivo y lee el contenido de cada archivo en una nueva columna llamada "contenido"
       files_df <- files_df %>%
         mutate(filename = paste(base, "rep_", rep, "_read_", read, sep = "")) %>%
         mutate(contenido = map_chr(filename, leer_contenido_archivo))
       
-      # Ordenar el DataFrame por 'base', 'rep' numéricamente y 'read'
+      #Ordenar el DataFrame por 'base', 'rep' numéricamente y 'read'
       files_df <- files_df %>%
         arrange(base, as.numeric(rep), read)
       
     }
   })
-  
+  # Control de Calidad
   #Función que tiene como objetivo buscar archivos html
   getHtmlFiles <- function(path) {
     list.files(path, pattern = "\\.html$", full.names = TRUE)
@@ -284,22 +285,22 @@ server <- function(input, output, session) {
   html_content <- reactiveVal() #Se crea una variable reactiva para almacenar archivos HTML que pueden variar 
   #Al presionar el botón "Iniciar Control de Calidad", se ejecuta el siguiente observeEvent
   observeEvent(input$start_qc,  { #para realizar el control de calidad, no importa si es single o paired end
-    # Obtenemos la ruta al directorio de secuencias, utiizando la variable reactiva rv$folder_path
+    #Obtenemos la ruta al directorio de secuencias, utiizando la variable reactiva rv$folder_path
     secuencias_dir <- paste0(rv$folder_path, "/", "secuencias")
     
-    # Se obtiene una lista completa de los archivos en el directorio de secuencias
+    #Se obtiene una lista completa de los archivos en el directorio de secuencias
     fastq_files <- list.files(secuencias_dir, full.names = TRUE)
     
     for (i in seq_along(fastq_files)) {
       fastq_filepath <- fastq_files[i]
       
-      # Ruta del script que hace el control de calidad
+      #Ruta del script que hace el control de calidad
       bash_script <- file.path(rv$folder_path, "script/ControlCalidad.sh")
       resultados_control_calidad <- file.path(rv$folder_path, "resultados/resultados_control_calidad")
-      # Pasar el archivo FastQ y el archivo de secuencia  como argumento al script de Bash
+      #Pasar el archivo FastQ y el archivo de secuencia  como argumento al script de Bash
       command <- paste("bash", bash_script, fastq_filepath,resultados_control_calidad, replace = TRUE)
       
-      # Ejecutar el script de Control de Calidad utilizando el sistema operativo 
+      #Ejecutar el script de Control de Calidad utilizando el sistema operativo 
       ControlCalidad <- system(command, inter=TRUE)
     }
     
@@ -345,7 +346,7 @@ server <- function(input, output, session) {
   
   
   
-  
+  # Preprocesamiento
   observeEvent(input$Preproccesing, {
     
     # Se obtiene la ruta al directorio de secuencias
@@ -453,7 +454,7 @@ server <- function(input, output, session) {
         footer = NULL
       ))
     }
-    #Realizar el control de calidad de los archivos preprocesados
+    # Realizar el control de calidad de los archivos preprocesados
     observeEvent(input$preprocesamiento_qc,  {
       preprocesing_dir <- paste0(rv$folder_path, "/", "resultados/resultados_preprocessing")
       
@@ -463,13 +464,13 @@ server <- function(input, output, session) {
       for (i in seq_along(fastq_files)) {
         fastq_filepath <- fastq_files[i]
         
-        # Ruta del script que hace el control de calidad
+        #Ruta del script que hace el control de calidad
         bash_script <- file.path(rv$folder_path, "script/ControlCalidad.sh")
         resultados_control_calidad <- file.path(rv$folder_path, "resultados/resultados_preprocessing/resultados_control_calidad")
         # Pasar el archivo FastQ y el archivo de secuencia  como argumento al script de Bash
         command <- paste("bash", bash_script, fastq_filepath,resultados_control_calidad, replace = TRUE)
         
-        # Ejecutar el script de Control de Calidad utilizando el sistema operativo 
+        #Ejecutar el script de Control de Calidad utilizando el sistema operativo 
         ControlCalidad <- system(command, inter=TRUE)
       }
       showModal(modalDialog(
@@ -504,7 +505,7 @@ server <- function(input, output, session) {
         }
       })
       
-      # Renderizar el contenido HTML usando la variable reactiva
+      #Renderizar el contenido HTML usando la variable reactiva
       output$html_Vista <- renderUI({
         HTML(html_content())
       })
@@ -512,14 +513,14 @@ server <- function(input, output, session) {
     })
     
   })
-  #Cargar la secuencia de referencia
+  # Cargar la secuencia de referencia
   observeEvent(input$Referencia, {
     target_sequence_filepath <- input$target_sequence$datapath
     
   })
   
   
-  
+# Alineamiento
   observeEvent(input$Alinear, {
     if(input$formato == "single") {
       #Se almacenan losresultados en la carpeta 'resultados_alineamiento'
@@ -627,7 +628,7 @@ server <- function(input, output, session) {
       ))
     }
   })
-  
+  # Trasformar archivos SAM a BAM
   observeEvent(input$Sam, {
     #ruta a la carpeta donde estan todos los archivos sam
     sam_path<- file.path(rv$folder_path, "resultados/resultados_alineamiento")
@@ -656,6 +657,7 @@ server <- function(input, output, session) {
       footer = NULL
     ))
   })
+  # Matriz de Conteo
   observeEvent(input$matriz, {
     #ruta a la carpeta donde estan todos los archivos bam
     bam_path<- file.path(rv$folder_path, "resultados/resultados_alineamiento")
